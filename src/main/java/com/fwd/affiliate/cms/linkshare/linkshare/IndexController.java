@@ -25,23 +25,39 @@ import org.xml.sax.SAXException;
 @Controller
 public class IndexController {
 
+    // UTMParam:
+    // UTMreferralCode=r5F36Q48&article=www.bbc.com/14075&Media=Facebook&PostID=14072
+
     @RequestMapping("/")
-    public String index() {
-	return "";
+    public String index(@RequestParam(name = "UTMreferralCode", required = true) String UTMreferralCode,
+	    @RequestParam(name = "article", required = true) String article,
+	    @RequestParam(name = "media", required = true) String media,
+	    @RequestParam(name = "PostId", required = true) String PostId, Model model)
+	    throws ParserConfigurationException, SAXException, IOException {
+	Document doc = Jsoup.connect(article).get();
+
+	String metaList = doc.select("meta").outerHtml();
+
+	System.out.println("metaList" + metaList);
+
+	model.addAttribute("link", article);
+	model.addAttribute("metaList", metaList);
+
+	return "index";
     }
 
     @GetMapping("/link")
-    public String link(@RequestParam(name = "link", required = true) String link, Model model)
+    public String link(@RequestParam(name = "UTMreferralCode", required = true) String UTMreferralCode,
+	    @RequestParam(name = "article", required = true) String article,
+	    @RequestParam(name = "media", required = true) String media,
+	    @RequestParam(name = "PostId", required = true) String PostId, Model model)
 	    throws ParserConfigurationException, SAXException, IOException {
-	Document doc = Jsoup.connect(link).get();
-	
+
+	Document doc = Jsoup.connect(article).get();
 	String metaList = doc.select("meta").outerHtml();
-
-	System.out.println("metaList"+metaList);
-	
-	model.addAttribute("link", link);
+	System.out.println("metaList" + metaList);
+	model.addAttribute("link", article);
 	model.addAttribute("metaList", metaList);
-
 	return "index";
     }
 }
