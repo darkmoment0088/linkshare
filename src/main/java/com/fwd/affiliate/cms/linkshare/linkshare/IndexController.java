@@ -29,10 +29,10 @@ public class IndexController {
     // UTMreferralCode=r5F36Q48&article=www.bbc.com/14075&Media=Facebook&PostID=14072
 
     @RequestMapping("/")
-    public String index(@RequestParam(name = "UTMreferralCode", required = true) String UTMreferralCode,
+    public String index(@RequestParam(name = "UTMreferralCode", required = false) String UTMreferralCode,
 	    @RequestParam(name = "article", required = true) String article,
-	    @RequestParam(name = "media", required = true) String media,
-	    @RequestParam(name = "PostId", required = true) String PostId, Model model)
+	    @RequestParam(name = "media", required = false) String media,
+	    @RequestParam(name = "PostId", required = false) String PostId, Model model)
 	    throws ParserConfigurationException, SAXException, IOException {
 	Document doc = Jsoup.connect(article).get();
 
