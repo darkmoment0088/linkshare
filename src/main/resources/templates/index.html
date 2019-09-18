@@ -4,8 +4,8 @@
 [(${metaList})]
 <meta charset="UTF-8">
 
-<script src="../js/jquery-3.4.1.min.js"></script>
-<script src="../js/bootstrap.min.js.map.js"></script>
+<script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="../css/bootstrap.min.css">
 
 <style>
@@ -20,23 +20,56 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: white;
+	color: black;
+	padding-left: 10%;
+	padding-right: 10%;
+}
+
+.circular--square {
+	position: relative;
+	top: -20px;
+	z-index: 99;
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	 border-style: solid;
+  	border-width: 1px;
+	border-color: red;
+}
 </style>
 
 <script>
-console.log("test");
-	
-function showAgent() {
-	
-}
+	function showAgent() {
+		$("#leadInfoForm").fadeOut(120, function() {
+			$("#agentInfo").fadeIn();
+		});
+	}
 
-function showLeadForm() {
-	
-}
+	function showLeadForm() {
+		$("#agentInfo").fadeOut(120, function() {
+			$("#leadInfoForm").fadeIn();
+		});
+	}
 
-function showAgentDetails() {
-	
-}
+	function showAgentDetails() {
 
+	}
+
+	function leadSubmit() {
+
+	}
+
+	$(document).ready(function() {
+		$("#leadInfoForm").hide()
+		$("#agentInfo").show();
+	});
 </script>
 </head>
 
@@ -45,16 +78,59 @@ function showAgentDetails() {
 	<iframe th:src=${link} frameborder="0"
 		style="display: block; border: none; height: 100vh; width: 100vw;">
 	</iframe>
-	<footer class="text-center py-3">
-		<div id="agentInfo">agent Info</div>
-		<div id="leadInfoForm">
-			<form class="form-inline">
-				<input class="form-control form-control-sm mr-3 w-75" type="text"
-					placeholder="Search" aria-label="Search"> <i
-					class="fas fa-search" aria-hidden="true"></i>
-			</form>
+
+	<!-- Modal -->
+	<div class="modal fade" id="agentDetails" role="dialog">
+		<div class="modal-dialog">
+
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="text-center">[(${Agent.AgentName})]</h6>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+
+					<p class="text-justify">[(${Agent.briefDescription})]</p>
+				</div>
+
+			</div>
 
 		</div>
+	</div>
+
+	<footer class="footer">
+		<div id="agentInfo" class="container m-1 p-1">
+			<div class="row">
+				<div class="col" data-toggle="modal" data-target="#agentDetails">
+					<img data-toggle="modal" data-target="#agentDetails"
+						class="circular--square" th:src="${Agent.imgUrl}" />
+				</div>
+				<div class="col" data-toggle="modal" data-target="#agentDetails">
+					<div class="row">[(${Agent.ExpertiseYear})] YRS |
+						[(${Agent.expertiseFields})]</div>
+					<div class="row">[(${Agent.AgentName})]</div>
+					<div class="row">[(${Agent.Accolade})]</div>
+				</div>
+				<div class="col">
+					<button class="btn btn-info btn-lg" onclick="showLeadForm()">let's
+						talk</button>
+				</div>
+			</div>
+		</div>
+
+		<div id="leadInfoForm" class="container m-1 p-1">
+			<form class="form-inline" submit="leadSubmit()">
+				<input class="form-control form-control-sm mr-3 w-75" type="text"
+					placeholder="name" aria-label="name">
+
+			</form>
+			<button class="btn btn-info btn-lg" onclick="showAgent()">let's
+				talk</button>
+
+		</div>
+
+
 	</footer>
 </body>
 </html>

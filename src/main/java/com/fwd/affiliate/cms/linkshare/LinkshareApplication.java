@@ -1,4 +1,4 @@
-package com.fwd.affiliate.cms.linkshare.linkshare;
+package com.fwd.affiliate.cms.linkshare;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
