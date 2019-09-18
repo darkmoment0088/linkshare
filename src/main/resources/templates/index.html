@@ -3,31 +3,58 @@
 <head>
 [(${metaList})]
 <meta charset="UTF-8">
+
+<script src="../js/jquery-3.4.1.min.js"></script>
+<script src="../js/bootstrap.min.js.map.js"></script>
+<link rel="stylesheet" href="../css/bootstrap.min.css">
+
 <style>
-html
-{
-height: 100%;
-margin: 0;
-padding: 0;
+html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }
 
-body
-{
-height: 100%;
-margin: 0;
-padding: 0;
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
 }
-
 </style>
+
+<script>
+console.log("test");
+	
+function showAgent() {
+	
+}
+
+function showLeadForm() {
+	
+}
+
+function showAgentDetails() {
+	
+}
+
+</script>
 </head>
 
-<body style="margin:0px;padding:0px;overflow:hidden">
+<body style="margin: 0px; padding: 0px; overflow: hidden">
 
-<iframe th:src=${link} frameborder="0" style="display: block;border: none;height: 100vh;width: 100vw;">
-</iframe>
+	<iframe th:src=${link} frameborder="0"
+		style="display: block; border: none; height: 100vh; width: 100vw;">
+	</iframe>
+	<footer class="text-center py-3">
+		<div id="agentInfo">agent Info</div>
+		<div id="leadInfoForm">
+			<form class="form-inline">
+				<input class="form-control form-control-sm mr-3 w-75" type="text"
+					placeholder="Search" aria-label="Search"> <i
+					class="fas fa-search" aria-hidden="true"></i>
+			</form>
 
-<footer style="position:fixed; bottom:0; width:100%; background-color: Orange;">
-<h2>this is footer</h2>
-</footer>
+		</div>
+	</footer>
 </body>
 </html>
