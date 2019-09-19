@@ -4,9 +4,18 @@
 [(${metaList})]
 <meta charset="UTF-8">
 
-<script type="text/javascript" src="../js/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="../css/bootstrap.min.css">
+<script
+	type="text/javascript"
+	src="../js/jquery-3.4.1.min.js"></script>
+<script
+	type="text/javascript"
+	src="../js/bootstrap.min.js"></script>
+<script
+	type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKSyKHk4Y_wbNjJlzxq6T7mJhkvl9O8Ck&libraries=places"></script>
+<link
+	rel="stylesheet"
+	href="../css/bootstrap.min.css">
 
 <style>
 html {
@@ -15,10 +24,22 @@ html {
 	padding: 0;
 }
 
+@media only screen and (max-device-width: 480px) {
+	#footer {
+		height: auto;
+	}
+}
+
 body {
 	height: 100%;
+	width: 100%;
 	margin: 0;
 	padding: 0;
+	margin: 0;
+}
+
+.fillHeight {
+	height: 100%;
 }
 
 .footer {
@@ -26,22 +47,60 @@ body {
 	left: 0;
 	bottom: 0;
 	width: 100%;
-	background-color: white;
-	color: black;
-	padding-left: 10%;
-	padding-right: 10%;
+	height: 15%;
+	background-color: #01626B;
+	color: white;
+	background-color: #01626B;
 }
 
 .circular--square {
 	position: relative;
-	top: -20px;
+	top: -30px;
 	z-index: 99;
 	border-radius: 50%;
-	width: 100px;
-	height: 100px;
-	 border-style: solid;
-  	border-width: 1px;
-	border-color: red;
+	width: 130px;
+	height: 130px;
+	border-style: solid;
+	border-width: 4px;
+	border-color: #92e6f37a;
+	float: left;
+}
+
+#donePgImg {
+	position: relative;
+	top: -30px;
+	z-index: 99;
+	width: 130px;
+	height: 130px;
+	float: left;
+}
+
+.letsTalkBtn {
+	background-color: #F4741A;
+	color: white;
+	-moz-border-radius: 28px;
+	-webkit-border-radius: 28px;
+	border-radius: 28px;
+	border: 1px solid #f4751a;
+	display: inline-block;
+	font-family: Arial;
+	font-size: 17px;
+	padding: 2px 40px;
+	text-decoration: none;
+}
+
+.letsTalkBtn:active {
+	position: relative;
+	top: 1px;
+}
+
+.letsTalkBtn:hover {
+	background-color: #f58d42;
+}
+
+.footerContain {
+	height: 100%;
+	width: 100%;
 }
 </style>
 
@@ -58,36 +117,82 @@ body {
 		});
 	}
 
-	function showAgentDetails() {
-
+	function showDonePg() {
+		$("#leadInfoForm").fadeOut(120, function() {
+			$("#donePg").fadeIn();
+		});
 	}
 
-	function leadSubmit() {
+	function backToAgentPg() {
+		$("#donePg").fadeOut(120, function() {
+			$("#agentInfo").fadeIn();
+		});
+	}
 
+	function leadSubmit(form) {
+		console.log("submit");
+		
+		showDonePg();
+	}
+
+	function getLocation() {
+		if (navigator.geolocation) {
+			return navigator.geolocation.getCurrentPosition(function(pos) {
+				console.log(position);
+
+			});
+
+		} else {
+			x.innerHTML = "Geolocation is not supported by this browser.";
+		}
 	}
 
 	$(document).ready(function() {
-		$("#leadInfoForm").hide()
+		$("#donePg").hide();
+		$("#leadInfoForm").hide();
 		$("#agentInfo").show();
+
+		/*
+		var defaultBounds = new google.maps.LatLngBounds(
+				  new google.maps.LatLng(-33.8902, 151.1759),
+				  new google.maps.LatLng(-33.8474, 151.2631));
+
+				var input = document.getElementById('preferredLocName');
+				var options = {
+				  bounds: defaultBounds,
+				  types: ['establishment']
+				};
+
+				autocomplete = new google.maps.places.Autocomplete(input, options);
+				
+		 */
 	});
 </script>
+
 </head>
 
 <body style="margin: 0px; padding: 0px; overflow: hidden">
 
-	<iframe th:src=${link} frameborder="0"
-		style="display: block; border: none; height: 100vh; width: 100vw;">
-	</iframe>
+	<iframe
+		th:src=${link}
+		frameborder="0"
+		style="display: block; border: none; height: 100vh; width: 100vw;"> </iframe>
 
 	<!-- Modal -->
-	<div class="modal fade" id="agentDetails" role="dialog">
+	<div
+		class="modal fade"
+		id="agentDetails"
+		role="dialog">
 		<div class="modal-dialog">
 
 			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
 					<h6 class="text-center">[(${Agent.AgentName})]</h6>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button
+						type="button"
+						class="close"
+						data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body">
 
@@ -100,36 +205,96 @@ body {
 	</div>
 
 	<footer class="footer">
-		<div id="agentInfo" class="container m-1 p-1">
+		<div
+			id="agentInfo"
+			class="container-fluid fillHeight m-1 p-1">
 			<div class="row">
-				<div class="col" data-toggle="modal" data-target="#agentDetails">
-					<img data-toggle="modal" data-target="#agentDetails"
-						class="circular--square" th:src="${Agent.imgUrl}" />
+
+				<div
+					class="col-md-4 text-md-left"
+					data-toggle="modal"
+					data-target="#agentDetails">
+
+					<img
+						data-toggle="modal"
+						data-target="#agentDetails"
+						class="circular--square ml-3 mr-3"
+						th:src="${Agent.imgUrl}" />
+
+					<div class="text-md-left">
+						<div>[(${Agent.ExpertiseYear})] YRS | [(${Agent.expertiseFields})]</div>
+						<div>
+							<b>[(${Agent.AgentName})]</b>
+						</div>
+						<div>[(${Agent.Accolade})]</div>
+					</div>
+
 				</div>
-				<div class="col" data-toggle="modal" data-target="#agentDetails">
-					<div class="row">[(${Agent.ExpertiseYear})] YRS |
-						[(${Agent.expertiseFields})]</div>
-					<div class="row">[(${Agent.AgentName})]</div>
-					<div class="row">[(${Agent.Accolade})]</div>
+				<div class="col-md-4 text-justify">
+					<p class="text-justify">[(${Agent.briefDescription})]</p>
+
 				</div>
-				<div class="col">
-					<button class="btn btn-info btn-lg" onclick="showLeadForm()">let's
-						talk</button>
+				<div class="col-md-2 text-center justify-content-center align-self-center">
+					<button
+						class="letsTalkBtn"
+						onclick="showLeadForm()">let's talk</button>
 				</div>
 			</div>
 		</div>
 
-		<div id="leadInfoForm" class="container m-1 p-1">
-			<form class="form-inline" submit="leadSubmit()">
-				<input class="form-control form-control-sm mr-3 w-75" type="text"
-					placeholder="name" aria-label="name">
+		<div
+			id="leadInfoForm"
+			class="container-fluid fillHeight m-1 p-1">
 
+
+			<form
+				id="leadForm"
+				method="post"
+				onsubmit="leadSubmit(this); return false"
+				class="form-inline text-center justify-content-center align-self-center">
+				<input
+					id="name"
+					class="md-3 form-control mr-3"
+					type="text"
+					placeholder="Your name"
+					aria-label="name"> <input
+					id="age"
+					class="md-1 form-control mr-3"
+					type="text"
+					placeholder="Your age"
+					aria-label="age"> <input
+					id="mobileNo"
+					class="md-3 form-control mr-3"
+					type="text"
+					placeholder="Mobile number"
+					aria-label="mobileNo"> <input
+					id="preferredLocName"
+					class="md-3 form-control mr-3"
+					type="text"
+					placeholder="Best area to reach"
+					aria-label="preferredLocName">
+				<button
+					type="submit"
+					id="submit"
+					value="submit"
+					class="letsTalkBtn">Contact Me</button>
 			</form>
-			<button class="btn btn-info btn-lg" onclick="showAgent()">let's
-				talk</button>
-
 		</div>
 
+		<div
+			id="donePg"
+			class="container-fluid fillHeight  justify-content-center align-self-center m-1 p-1"
+			onclick="backToAgentPg()">
+			<div class="align-self-center">	
+			<img
+				id="donePgImg"
+				src="../img/Graphics_contactus.png" />
+			<p>Great, you are on my list.</p>
+			<p>I'll contact you soon!</p>
+			</div>
+		
+
+		</div>
 
 	</footer>
 </body>
