@@ -70,7 +70,7 @@ public class IndexController {
 	    while ((line = in.readLine()) != null) {
 		tmp.append(line);
 	    }
-
+	    System.out.println("tmp : " + tmp);
 	    Document doc = Jsoup.parse(String.valueOf(tmp));
 
 	    // Document doc = Jsoup.connect(articleUrl).get();
@@ -84,7 +84,7 @@ public class IndexController {
 	try {
 	    agent = agentService.getAgentFromUrl(utmCode, articleUrl, postId, media);
 	} catch (Exception e) {
-
+	    e.printStackTrace();
 	}
 
 	model.addAttribute("link", articleUrl);
