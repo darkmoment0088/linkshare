@@ -193,7 +193,7 @@ body {
 			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
-					<h6 class="text-center">[(${Agent.AgentName})]</h6>
+					<h6 class="text-center">[(${Agent?.AgentName})]</h6>
 					<button
 						type="button"
 						class="close"
@@ -201,7 +201,7 @@ body {
 				</div>
 				<div class="modal-body">
 
-					<p class="text-justify">[(${Agent.briefDescription})]</p>
+					<p class="text-justify">[(${Agent?.briefDescription})]</p>
 				</div>
 
 			</div>
@@ -224,19 +224,19 @@ body {
 						data-toggle="modal"
 						data-target="#agentDetails"
 						class="circular--square ml-3 mr-3"
-						th:src="${Agent.imgUrl}" />
+						th:src="${Agent?.imgUrl}" />
 
 					<div class="text-md-left">
-						<div>[(${Agent.ExpertiseYear})] YRS | [(${Agent.expertiseFields})]</div>
+						<div>[(${Agent?.ExpertiseYear})] YRS | [(${Agent?.expertiseFields})]</div>
 						<div>
-							<b>[(${Agent.AgentName})]</b>
+							<b>[(${Agent?.AgentName})]</b>
 						</div>
-						<div>[(${Agent.Accolade})]</div>
+						<div>[(${Agent?.Accolade})]</div>
 					</div>
 
 				</div>
 				<div class="col-md-4 text-justify">
-					<p class="text-justify">[(${Agent.briefDescription})]</p>
+					<p class="text-justify">[(${Agent?.briefDescription})]</p>
 
 				</div>
 				<div class="col-md-2 text-center justify-content-center align-self-center">

@@ -3,10 +3,7 @@ package com.fwd.affiliate.cms.linkshare.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -34,10 +31,9 @@ public class IndexController {
 
     @Autowired
     AgentService agentService;
-    Agent agent;
+
     // UTMParam:
-    // http://localhost:8080/?articleUrl=http://www.bbc.com&utmCode=pJzZMRfF&media=Wc&postId=1
-    // https://affiliatelinkshare.herokuapp.com/?articleUrl=http://www.bbc.com&utmCode=pJzZMRfF&media=Wc&postId=1
+    // https://affiliatelinkshare.herokuapp.com/?article=https://www.bbc.com&UTMreferralCode=r5F36Q48&Media=Facebook&PostID=14072
 
     @RequestMapping("/")
     public String index(@RequestParam(name = "utmCode", required = false) String utmCode,
@@ -47,16 +43,10 @@ public class IndexController {
 	    throws ParserConfigurationException, SAXException, IOException {
 
 	// use URL parsing so can omit https://
-	String metaList = null;
+	String metaList = "";
 	try {
-
+	    
 	    /*
-	     * System.setProperty("http.proxyHost", "10.23.22.205");
-	     * System.setProperty("http.proxyPort", "80");
-	     * System.setProperty("https.proxyHost", "10.23.22.205");
-	     * System.setProperty("https.proxyPort", "80");
-	     */
-
 	    URL url = new URL(articleUrl);
 	    // Proxy proxy = new Proxy(Proxy.Type.HTTP, new
 	    // InetSocketAddress("10.23.22.205", 80)); // or whatever your proxy is
@@ -72,8 +62,17 @@ public class IndexController {
 	    }
 	    System.out.println("tmp : " + tmp);
 	    Document doc = Jsoup.parse(String.valueOf(tmp));
-
-	    // Document doc = Jsoup.connect(articleUrl).get();
+	     	
+	    */
+	    
+	    
+	    /*
+	     * System.setProperty("http.proxyHost", "10.23.22.205");
+	     * System.setProperty("http.proxyPort", "80");
+	     * System.setProperty("https.proxyHost", "10.23.22.205");
+	     * System.setProperty("https.proxyPort", "80");
+	     */
+	    Document doc = Jsoup.connect(articleUrl).get();
 	    metaList = doc.select("meta").outerHtml();
 	} catch (Exception e) {
 	    e.printStackTrace();
@@ -81,17 +80,20 @@ public class IndexController {
 
 	System.out.println("metaList" + metaList);
 
+	Agent agent = null;
+	
 	try {
 	    agent = agentService.getAgentFromUrl(utmCode, articleUrl, postId, media);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-
+	
 	model.addAttribute("link", articleUrl);
 	model.addAttribute("metaList", metaList);
 	model.addAttribute("media", media);
 	model.addAttribute("PostId", postId);
 	model.addAttribute("Agent", agent);
+
 
 	return "index";
     }
