@@ -130,7 +130,12 @@ body {
 	}
 
 	function leadSubmit(form) {
+		
 		console.log("submit");
+		var name = form.elements.name.value;
+		var age =form.elements.age.value;
+		var mobileNo = form.elements.mobileNo.value;
+		var preferredLocName = form.elements.preferredLocName.value;
 		
 		showDonePg();
 	}
