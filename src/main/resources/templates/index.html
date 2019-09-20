@@ -3,16 +3,15 @@
 <head>
 [(${metaList})]
 <meta charset="UTF-8">
-
+<meta
+	name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <script
 	type="text/javascript"
 	src="../js/jquery-3.4.1.min.js"></script>
 <script
 	type="text/javascript"
 	src="../js/bootstrap.min.js"></script>
-<script
-	type="text/javascript"
-	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKSyKHk4Y_wbNjJlzxq6T7mJhkvl9O8Ck&libraries=places"></script>
 <link
 	rel="stylesheet"
 	href="../css/bootstrap.min.css">
@@ -25,7 +24,7 @@ html {
 }
 
 @media only screen and (max-device-width: 480px) {
-	#footer {
+	.footer {
 		height: auto;
 	}
 }
@@ -38,19 +37,13 @@ body {
 	margin: 0;
 }
 
-.fillHeight {
-	height: 100%;
-}
-
 .footer {
-	position: fixed;
+	position: absolute;
 	left: 0;
 	bottom: 0;
 	width: 100%;
-	height: 15%;
 	background-color: #01626B;
 	color: white;
-	background-color: #01626B;
 }
 
 .circular--square {
@@ -64,6 +57,7 @@ body {
 	border-width: 4px;
 	border-color: #92e6f37a;
 	float: left;
+	padding-boto
 }
 
 #donePgImg {
@@ -97,13 +91,16 @@ body {
 .letsTalkBtn:hover {
 	background-color: #f58d42;
 }
-
-.footerContain {
-	height: 100%;
-	width: 100%;
-}
 </style>
-
+<script th:inline="javascript">
+	/*<![CDATA[*/
+	var globalAgent = /*[[(${Agent})]]*/'';
+	var globalAffiliate = /*[[(${Affiliate})]]*/'';
+	var globalPostLink = /*[[(${link})]]*/'';
+	var globalPostId = /*[[(${PostId})]]*/'';
+	var globalMedia = /*[[(${media})]]*/'';
+	/*]]>*/
+</script>
 <script>
 	function showAgent() {
 		$("#leadInfoForm").fadeOut(120, function() {
@@ -129,15 +126,69 @@ body {
 		});
 	}
 
-	function leadSubmit(form) {
-		
+	function leadSubmit() {
+
 		console.log("submit");
+
+		var form = document.getElementById("leadForm");
+		var date = new Date();
+
+		//capture user input
 		var name = form.elements.name.value;
-		var age =form.elements.age.value;
+		var birthday = form.elements.birthday.value;
 		var mobileNo = form.elements.mobileNo.value;
 		var preferredLocName = form.elements.preferredLocName.value;
+		var timeStamp = date.getTime();
+
+		//json Object
+		var obj = {};
+		obj["agentCode"] = "";
+		obj["birthDate"] = birthday;
+		obj["name"] = {};
+		obj.name["en"] = name;
+		obj["mobileNumber"] = mobileNo;
+		obj["affiliateCode"] = "";
+		obj["affiliatePostLink"] = globalPostLink;
+		obj["affiliatePostId"] = globalPostId;
+		obj["affiliateSharedMedia"] = globalMedia;
+		obj["preferredLocName"] = preferredLocName;
+		obj["preferredLocLongitude"] = "";
+		obj["preferredLocLatitude"] = "";
+		obj["assignTimestamp"] = timeStamp;
+
+		//add affiliate info if affilite exist
+		if (globalAffiliate != null) {
+			obj.affiliateCode = globalAffiliate.id;
+		}
+		//add agent info if agent exist
+		if (globalAgent != null) {
+			obj.agentCode = globalAgent.id;
+		}
+
+		console.log(obj);
+		var jsonResult = JSON.stringify(obj);
+		console.log(jsonResult);
 		
-		showDonePg();
+		var postUrl = "http://10.110.1.130:8080/affiliate_gateway/affiliate_share/external/lead/createLead";
+		$.ajax({
+            url: postUrl,
+            dataType: 'json',
+            type: 'post',
+            contentType: 'application/json',
+            data: jsonResult,
+            success: function( data, textStatus, jQxhr ) {
+				console.log(data);
+				console.log(textStatus);
+				console.log(jQxhr);
+				showDonePg();
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                console.log( errorThrown );
+                alert("error:" + errorThrown);
+                showAgent();
+            }
+        });
+	
 	}
 
 	function getLocation() {
@@ -212,19 +263,21 @@ body {
 	<footer class="footer">
 		<div
 			id="agentInfo"
-			class="container-fluid fillHeight m-1 p-1">
+			class="container-fluid m-1 p-1">
 			<div class="row">
-
 				<div
 					class="col-md-4 text-md-left"
 					data-toggle="modal"
 					data-target="#agentDetails">
 
-					<img
-						data-toggle="modal"
-						data-target="#agentDetails"
-						class="circular--square ml-3 mr-3"
-						th:src="${Agent?.imgUrl}" />
+					<div>
+						<img
+							data-toggle="modal"
+							data-target="#agentDetails"
+							class="circular--square ml-3 mr-3"
+							th:src="${Agent?.imgUrl}" />
+					</div>
+
 
 					<div class="text-md-left">
 						<div>[(${Agent?.ExpertiseYear})] YRS | [(${Agent?.expertiseFields})]</div>
@@ -249,55 +302,54 @@ body {
 
 		<div
 			id="leadInfoForm"
-			class="container-fluid fillHeight m-1 p-1">
+			class="container-fluid  m-1 p-1">
 
 
 			<form
 				id="leadForm"
 				method="post"
-				onsubmit="leadSubmit(this); return false"
 				class="form-inline text-center justify-content-center align-self-center">
 				<input
 					id="name"
-					class="md-3 form-control mr-3"
+					class="md-3 form-control m-3"
 					type="text"
 					placeholder="Your name"
 					aria-label="name"> <input
-					id="age"
-					class="md-1 form-control mr-3"
-					type="text"
-					placeholder="Your age"
-					aria-label="age"> <input
+					id="birthday"
+					class="md-1 form-control m-3"
+					type="date"
+					aria-label="birthday"> <input
 					id="mobileNo"
-					class="md-3 form-control mr-3"
+					class="md-3 form-control m-3"
 					type="text"
 					placeholder="Mobile number"
 					aria-label="mobileNo"> <input
 					id="preferredLocName"
-					class="md-3 form-control mr-3"
+					class="md-3 form-control m-3"
 					type="text"
 					placeholder="Best area to reach"
 					aria-label="preferredLocName">
 				<button
-					type="submit"
+					type="button"
 					id="submit"
 					value="submit"
+					onclick="leadSubmit()"
 					class="letsTalkBtn">Contact Me</button>
 			</form>
 		</div>
 
 		<div
 			id="donePg"
-			class="container-fluid fillHeight  justify-content-center align-self-center m-1 p-1"
+			class="container-fluid  justify-content-center align-self-center m-1 p-1"
 			onclick="backToAgentPg()">
-			<div class="align-self-center">	
-			<img
-				id="donePgImg"
-				src="../img/Graphics_contactus.png" />
-			<p>Great, you are on my list.</p>
-			<p>I'll contact you soon!</p>
+			<div class="align-self-center">
+				<img
+					id="donePgImg"
+					src="../img/Graphics_contactus.png" />
+				<p>Great, you are on my list.</p>
+				<p>I'll contact you soon!</p>
 			</div>
-		
+
 
 		</div>
 

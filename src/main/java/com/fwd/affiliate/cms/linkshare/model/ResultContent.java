@@ -1,13 +1,19 @@
 package com.fwd.affiliate.cms.linkshare.model;
 
+import java.util.Date;
+
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultContent {
 
     Agent agent;
-    PostDetail postDetail;
+    Affiliate affiliate;
 }
