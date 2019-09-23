@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 [(${metaList})]
 <meta charset="UTF-8">
@@ -12,6 +13,12 @@
 <script
 	type="text/javascript"
 	src="../js/bootstrap.min.js"></script>
+
+<!-- google maps api -->
+<!--  will restrict api to certain domain later. -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlQPuIsQpfcWM560EypoUaMkMjDQgbbI4&libraries=places">
+	
+</script>
 <link
 	rel="stylesheet"
 	href="../css/bootstrap.min.css">
@@ -91,6 +98,11 @@ body {
 .letsTalkBtn:hover {
 	background-color: #f58d42;
 }
+
+.pac-container {
+	margin-top: -210px;
+}
+
 </style>
 <script th:inline="javascript">
 	/*<![CDATA[*/
@@ -126,9 +138,16 @@ body {
 		});
 	}
 
-	function leadSubmit() {
+	function clearInputs() {
+		var form = document.getElementById("leadForm");
+		form.elements.name.value = "";
+		form.elements.birthday.value = "";
+		form.elements.mobileNo.value = "";
+		form.elements.preferredLocName.value = "";
+	}
 
-		console.log("submit");
+	function leadSubmit() {
+		showLoading();
 
 		var form = document.getElementById("leadForm");
 		var date = new Date();
@@ -139,6 +158,8 @@ body {
 		var mobileNo = form.elements.mobileNo.value;
 		var preferredLocName = form.elements.preferredLocName.value;
 		var timeStamp = date.getTime();
+		var latitude = form.elements.latitude_input.value;
+		var longitude = form.elements.longitude_input.value;
 
 		//json Object
 		var obj = {};
@@ -152,8 +173,8 @@ body {
 		obj["affiliatePostId"] = globalPostId;
 		obj["affiliateSharedMedia"] = globalMedia;
 		obj["preferredLocName"] = preferredLocName;
-		obj["preferredLocLongitude"] = "";
-		obj["preferredLocLatitude"] = "";
+		obj["preferredLocLongitude"] = longitude;
+		obj["preferredLocLatitude"] = latitude;
 		obj["assignTimestamp"] = timeStamp;
 
 		//add affiliate info if affilite exist
@@ -166,36 +187,48 @@ body {
 		}
 
 		console.log(obj);
-		var jsonResult = JSON.stringify(obj);
-		console.log(jsonResult);
-		
+
+		//call createLead Api.
 		var postUrl = "http://10.110.1.130:8080/affiliate_gateway/affiliate_share/external/lead/createLead";
 		$.ajax({
-            url: postUrl,
-            dataType: 'json',
-            type: 'post',
-            contentType: 'application/json',
-            data: jsonResult,
-            success: function( data, textStatus, jQxhr ) {
+			url : postUrl,
+			dataType : 'json',
+			type : 'post',
+			contentType : 'application/json',
+			data : JSON.stringify(obj),
+			success : function(data, textStatus, jQxhr) {
 				console.log(data);
 				console.log(textStatus);
 				console.log(jQxhr);
 				showDonePg();
-            },
-            error: function( jqXhr, textStatus, errorThrown ){
-                console.log( errorThrown );
-                alert("error:" + errorThrown);
-                showAgent();
-            }
-        });
-	
+				$("#submitLoadIcon").hide();
+				clearInputs();
+			},
+			error : function(jqXhr, textStatus, errorThrown) {
+				console.log(jqXhr);
+				console.log(textStatus);
+				console.log(errorThrown);
+				alert("error while sending info");
+				showAgent();
+				$("#submitLoadIcon").hide();
+				clearInputs();
+			}
+		});
+
+	}
+
+	function showLoading() {
+		$("#submitLoadIcon").show();
+	}
+
+	function hideLoading() {
+		$("#submitLoadIcon").hide();
 	}
 
 	function getLocation() {
 		if (navigator.geolocation) {
 			return navigator.geolocation.getCurrentPosition(function(pos) {
 				console.log(position);
-
 			});
 
 		} else {
@@ -203,32 +236,50 @@ body {
 		}
 	}
 
-	$(document).ready(function() {
-		$("#donePg").hide();
-		$("#leadInfoForm").hide();
-		$("#agentInfo").show();
+	var searchInput = "preferredLocName";
 
-		/*
-		var defaultBounds = new google.maps.LatLngBounds(
-				  new google.maps.LatLng(-33.8902, 151.1759),
-				  new google.maps.LatLng(-33.8474, 151.2631));
+	$(document)
+			.ready(
+					function() {
+						$("#donePg").hide();
+						$("#leadInfoForm").hide();
+						$("#agentInfo").show();
 
-				var input = document.getElementById('preferredLocName');
-				var options = {
-				  bounds: defaultBounds,
-				  types: ['establishment']
-				};
+						var input = document.getElementById('preferredLocName');
+						var options = {
 
-				autocomplete = new google.maps.places.Autocomplete(input, options);
-				
-		 */
-	});
+						}
+						var autoComplete;
+						autoComplete = new google.maps.places.Autocomplete(
+								input, options);
+
+						google.maps.event
+								.addListener(
+										autoComplete,
+										'place_changed',
+										function() {
+											var near_place = autoComplete
+													.getPlace();
+											document
+													.getElementById("latitude_input").value = near_place.geometry.location
+													.lat();
+											document
+													.getElementById("longitude_input").value = near_place.geometry.location
+													.lng();
+										});
+					});
+
+	$(document).on('change', "#preferredLocName", function() {
+		document.getElementById("latitude_input").value = "";
+		document.getElementById("longitude_input").value = "";
+	})
 </script>
 
 </head>
 
 <body style="margin: 0px; padding: 0px; overflow: hidden">
 
+	<!-- iframe of article URL -->
 	<iframe
 		th:src=${link}
 		frameborder="0"
@@ -240,8 +291,6 @@ body {
 		id="agentDetails"
 		role="dialog">
 		<div class="modal-dialog">
-
-			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
 					<h6 class="text-center">[(${Agent?.AgentName})]</h6>
@@ -251,15 +300,14 @@ body {
 						data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body">
-
 					<p class="text-justify">[(${Agent?.briefDescription})]</p>
 				</div>
 
 			</div>
-
 		</div>
 	</div>
 
+	<!-- agent info footer -->
 	<footer class="footer">
 		<div
 			id="agentInfo"
@@ -269,7 +317,6 @@ body {
 					class="col-md-4 text-md-left"
 					data-toggle="modal"
 					data-target="#agentDetails">
-
 					<div>
 						<img
 							data-toggle="modal"
@@ -277,7 +324,6 @@ body {
 							class="circular--square ml-3 mr-3"
 							th:src="${Agent?.imgUrl}" />
 					</div>
-
 
 					<div class="text-md-left">
 						<div>[(${Agent?.ExpertiseYear})] YRS | [(${Agent?.expertiseFields})]</div>
@@ -288,7 +334,7 @@ body {
 					</div>
 
 				</div>
-				<div class="col-md-4 text-justify">
+				<div class="d-none d-sm-block col-md-4 text-justify">
 					<p class="text-justify">[(${Agent?.briefDescription})]</p>
 
 				</div>
@@ -303,7 +349,6 @@ body {
 		<div
 			id="leadInfoForm"
 			class="container-fluid  m-1 p-1">
-
 
 			<form
 				id="leadForm"
@@ -321,36 +366,50 @@ body {
 					aria-label="birthday"> <input
 					id="mobileNo"
 					class="md-3 form-control m-3"
-					type="text"
+					type="number"
 					placeholder="Mobile number"
 					aria-label="mobileNo"> <input
 					id="preferredLocName"
 					class="md-3 form-control m-3"
 					type="text"
 					placeholder="Best area to reach"
-					aria-label="preferredLocName">
+					aria-label="preferredLocName"> <input
+					type="hidden"
+					id="latitude_input" /> <input
+					type="hidden"
+					id="longitude_input" />
+
 				<button
 					type="button"
 					id="submit"
 					value="submit"
 					onclick="leadSubmit()"
-					class="letsTalkBtn">Contact Me</button>
+					class="letsTalkBtn">
+					</span> Contact Me <span
+						id="submitLoadIcon"
+						class="spinner-border spinner-border-sm"
+						role="status"
+						aria-hidden="true"
+						style="Display: none;">
+				</button>
 			</form>
 		</div>
 
 		<div
 			id="donePg"
-			class="container-fluid  justify-content-center align-self-center m-1 p-1"
+			class="container justify-content-center"
 			onclick="backToAgentPg()">
-			<div class="align-self-center">
+			<div class="d-flex justify-content-center">
 				<img
 					id="donePgImg"
-					src="../img/Graphics_contactus.png" />
-				<p>Great, you are on my list.</p>
-				<p>I'll contact you soon!</p>
+					src="../img/Graphics_contactus.png"
+					class="md-3 ml-4 mr-4 align-self-center" />
+				<div class="md-3">
+					<p>Great, you are on my list.</p>
+					<p>I'll contact you soon!</p>
+				</div>
+
 			</div>
-
-
 		</div>
 
 	</footer>

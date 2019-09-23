@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,11 +45,6 @@ public class AgentServiceImpl implements AgentService {
 
 	RestTemplate restTemplate = new RestTemplate();
 
-	HttpComponentsClientHttpRequestFactory rf =
-		    (HttpComponentsClientHttpRequestFactory) restTemplate.getRequestFactory();
-		rf.setReadTimeout(5 * 1000);
-		rf.setConnectTimeout(5 * 1000);
-	
 	String response = restTemplate.postForObject(uri, entity, String.class);
 	ObjectMapper objectMapper = new ObjectMapper();
 	objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
