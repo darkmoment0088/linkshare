@@ -1,0 +1,17 @@
+<jboss-deployment-structure>
+    <deployment>
+        <exclude-subsystems>
+            <subsystem name="jpa"/>
+            <subsystem name="logging"/>
+        </exclude-subsystems>
+        <exclusions>
+            <module name="javaee.api"/>
+            <module name="org.slf4j"/>
+            <module name="org.slf4j.impl"/>
+        </exclusions>
+        <dependencies>
+        	<module name="javax.annotation.api" export="true"/>
+        	<module name="my.com.fwd.configuration" />
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

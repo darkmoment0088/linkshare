@@ -1,4 +1,4 @@
-package com.fwd.affiliate.cms.linkshare.controller;
+package com.fwd.affiliate.lead.controller;
 
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import org.xml.sax.SAXException;
 
-import com.fwd.affiliate.cms.linkshare.model.ResultContent;
-import com.fwd.affiliate.cms.linkshare.service.AgentService;
+import com.fwd.affiliate.lead.model.ResultContent;
+import com.fwd.affiliate.lead.service.AgentService;
 
 @Controller
 public class IndexController {
@@ -24,9 +24,9 @@ public class IndexController {
 
     // UTMParam:
     // https://affiliatelinkshare.herokuapp.com/?article=https://www.bbc.com&UTMreferralCode=zFNY1055&Media=Facebook&PostID=14072
-    // http://localhost:8080/?articleUrl=https://www.bbc.com&utmCode=zFNY1055&media=Wc&postId=1
+    // http://localhost:8080/?articleUrl=https://www.bbc.com&ref=zFNY1055&media=Wc&postId=1
     @RequestMapping("/")
-    public String index(@RequestParam(name = "utmCode", required = false) String utmCode,
+    public String index(@RequestParam(name = "ref", required = false) String ref,
 	    @RequestParam(name = "articleUrl", required = true) String articleUrl,
 	    @RequestParam(name = "media", required = false) String media,
 	    @RequestParam(name = "postId", required = false) String postId, Model model)
@@ -67,7 +67,7 @@ public class IndexController {
 	System.out.println("metaList" + metaList);
 
 	try {
-	    ResultContent resultContent = agentService.getViewLogFromUrl(utmCode, articleUrl, postId, media);
+	    ResultContent resultContent = agentService.getViewLogFromUrl(ref, articleUrl, postId, media);
 	    model.addAttribute("Agent", resultContent.getAgent());
 	    model.addAttribute("Affiliate", resultContent.getAffiliate());
 	} catch (Exception e) {

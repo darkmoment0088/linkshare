@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fwd.affiliate.linkshare</groupId>
-	<artifactId>linkshare</artifactId>
+	<groupId>com.fwd.affiliate.lead</groupId>
+	<artifactId>affiliate_lead</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>linkshare</name>
-	<description>Spring Boot Affiliate linkshare</description>
+	<name>affiliate_lead</name>
+	<description>affiliate_lead</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -61,7 +61,7 @@
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>2.0.8</version>
 				<configuration>
-					<appName>affiliatelinkshare</appName>
+					<appName>affiliate_lead</appName>
 				</configuration>
 			</plugin>
 		</plugins>
