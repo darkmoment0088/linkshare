@@ -9,19 +9,17 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <script
 	type="text/javascript"
-	src="../js/jquery-3.4.1.min.js"></script>
+	src="js/jquery-3.4.1.min.js"></script>
 <script
 	type="text/javascript"
-	src="../js/bootstrap.min.js"></script>
+	src="js/bootstrap.min.js"></script>
 
 <!-- google maps api -->
 <!--  will restrict api to certain domain later. -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAlQPuIsQpfcWM560EypoUaMkMjDQgbbI4&libraries=places">
 	
 </script>
-<link
-	rel="stylesheet"
-	href="../css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
 
 <style>
 html {
@@ -115,6 +113,7 @@ body {
 	var globalPostLink = /*[[(${link})]]*/'';
 	var globalPostId = /*[[(${PostId})]]*/'';
 	var globalMedia = /*[[(${media})]]*/'';
+	var gloabalCreateLeadEndpoint = /*[[(${CreateLeadEndPoint})]]*/'';
 	/*]]>*/
 </script>
 <script>
@@ -193,7 +192,9 @@ body {
 		console.log(obj);
 
 		//call createLead Api.
-		var postUrl = "http://10.110.1.130:8080/affiliate_gateway/affiliate_share/external/lead/createLead";
+		//"http://10.110.1.130:8080/affiliate_gateway/affiliate_share/external/lead/createLead";
+		
+		var postUrl = gloabalCreateLeadEndpoint;
 		$.ajax({
 			url : postUrl,
 			dataType : 'json',
@@ -406,7 +407,7 @@ body {
 			<div class="d-flex justify-content-center">
 				<img
 					id="donePgImg"
-					src="../img/Graphics_contactus.png"
+					src="img/Graphics_contactus.png"
 					class="md-3 ml-4 mr-4 align-self-center" />
 				<div class="md-3">
 					<p>Great, you are on my list.</p>

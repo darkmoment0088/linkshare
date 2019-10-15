@@ -29,7 +29,7 @@ import com.fwd.affiliate.lead.service.AgentService;
 @Service("agentService")
 public class AgentServiceImpl implements AgentService {
     
-    @Value("${api.url}")
+    @Value("${url.saveViewLog}")
     private String uriFromSetting;
 
     public ResultContent getViewLogFromUrl(String utmRef, String articleUrl, String postId, String media)
@@ -41,11 +41,11 @@ public class AgentServiceImpl implements AgentService {
 
 	Map<String, Object> map = new HashMap<>();
 
-	map.put("utmCode", utmRef);
+	map.put("ref", utmRef);
 	map.put("postId", postId);
 	map.put("articleUrl", articleUrl);
 	map.put("media", media);
-
+	
 	HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
 	RestTemplate restTemplate = new RestTemplate();

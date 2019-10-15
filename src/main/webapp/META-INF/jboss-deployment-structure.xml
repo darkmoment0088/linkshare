@@ -2,7 +2,6 @@
     <deployment>
         <exclude-subsystems>
             <subsystem name="jpa"/>
-            <subsystem name="logging"/>
         </exclude-subsystems>
         <exclusions>
             <module name="javaee.api"/>
